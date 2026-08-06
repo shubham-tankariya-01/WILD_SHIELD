@@ -22,9 +22,10 @@ const app = express();
 // CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN 
-      ? [process.env.FRONTEND_ORIGIN, "http://localhost:5173"] 
-      : ["http://localhost:5173"],
+    origin: function (origin, callback) {
+      // Allow any origin to connect (perfect for portfolio deployment)
+      callback(null, true);
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
