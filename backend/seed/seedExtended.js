@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 require("dotenv").config({ path: require("path").join(__dirname, "..", ".env") });
+
+const dns = require("dns");
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 const User = require("../models/User");
 const RescueTeam = require("../models/RescueTeam");
 const ConservationActivity = require("../models/ConservationActivity");
@@ -10,7 +13,9 @@ const Feedback = require("../models/Feedback");
 
 const seedAllExtended = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(process.env.MONGODB_URI, {
+      family: 4 // Force IPv4 to prevent IPv6 timeout issues on free tier Atlas
+    });
     console.log("✅ Connected to MongoDB");
 
     // ==========================================

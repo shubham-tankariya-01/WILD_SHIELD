@@ -51,6 +51,18 @@ app.use("/api/admin", adminRoutes);
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
+// Trigger seed script from cloud environment
+app.get("/api/trigger-seed", (req, res) => {
+  const { exec } = require("child_process");
+  const scriptPath = path.join(__dirname, "seed", "seedExtended.js");
+  
+  exec(`node "${scriptPath}"`, (error, stdout, stderr) => {
+    if (error) {
+      return res.status(500).json({ error: error.message, stderr });
+    }
+    res.json({ message: "Seed successful!", stdout });
+  });
+});
 
 // Error middleware (must be last)
 app.use(errorMiddleware);
