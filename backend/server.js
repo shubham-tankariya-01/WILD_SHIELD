@@ -22,7 +22,9 @@ const app = express();
 // CORS
 app.use(
   cors({
-    origin: [process.env.FRONTEND_ORIGIN || "http://localhost:5173"],
+    origin: process.env.FRONTEND_ORIGIN 
+      ? [process.env.FRONTEND_ORIGIN, "http://localhost:5173"] 
+      : ["http://localhost:5173"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -55,7 +57,7 @@ app.get("/api/health", (req, res) => {
 app.get("/api/trigger-seed", (req, res) => {
   const { exec } = require("child_process");
   const scriptPath = path.join(__dirname, "seed", "seedExtended.js");
-  
+
   exec(`node "${scriptPath}"`, (error, stdout, stderr) => {
     if (error) {
       return res.status(500).json({ error: error.message, stderr });
